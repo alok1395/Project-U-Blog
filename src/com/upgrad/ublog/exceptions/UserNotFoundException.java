@@ -6,18 +6,22 @@ package com.upgrad.ublog.exceptions;
  *  parameter and passes it to its base class.
  */
 
-public class UserNotFoundException {
+public class UserNotFoundException  extends Exception{
 
-//    public static void main(String[] args) {
-//        try {
-//            throw new UserNotFoundException("Custom Message");
-//        } catch (UserNotFoundException e) {
-//            System.out.println(e.getMessage());
-//        }
-//
-//        /**
-//         * Your output should look like this.
-//         * Custom Message
-//         */
-//    }
+    public UserNotFoundException(String message) {
+        super(message);
+    }
+
+    public static void main(String[] args) {
+        try {
+            throw new UserNotFoundException("Custom Message");
+        } catch (UserNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+
+        /**
+         * Your output should look like this.
+         * Custom Message
+         */
+    }
 }
