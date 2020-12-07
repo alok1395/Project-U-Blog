@@ -17,6 +17,8 @@ import java.util.Scanner;
 public class Application {
     private Scanner scanner;
 
+    ServiceFactory serviceFactory=new ServiceFactory();
+
     private PostService postService;
     private UserService userService;
 
@@ -85,6 +87,18 @@ public class Application {
         System.out.println("********Login********");
         System.out.println("*********************");
 
+        User user= new User();
+
+        try {
+            if (userService.login(user)) {
+                System.out.println("You are logged in.");
+                isLoggedIn = true;
+                loggedInEmailId = user.getEmailId();
+            }
+        } catch (Exception e) {
+            //code to execute when account object was null
+            System.out.println(e.getMessage());
+        }
 
     }
 
@@ -109,6 +123,18 @@ public class Application {
         System.out.println("*********************");
 
 
+        User user= new User();
+
+        try {
+            if (userService.register(user)) {
+                System.out.println("You are logged in.");
+                isLoggedIn = true;
+                loggedInEmailId = user.getEmailId();
+            }
+        } catch (Exception e) {
+            //code to execute when account object was null
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -151,6 +177,34 @@ public class Application {
         System.out.println("*********************");
         System.out.println("*****Create Post*****");
         System.out.println("*********************");
+        
+        int postId=1;
+        String emailId=loggedInEmailId;
+        String tag="";
+        String title="";
+        String Description="";
+
+
+        tag = scanner.next();
+        title= scanner.next();
+        Description=scanner.next();
+        System.out.println("You entered tag : " + tag + ", title :" + title + "and Description :" +Description);
+
+
+        Post post =new Post();
+
+        post.setPostId(postId);
+        post.setEmailId(emailId);
+        post.setTag(tag);
+        post.setTitle(title);
+        post.setDescription(Description);
+        post.setTimestamp(LocalDateTime.now());
+
+       try{
+           Post temp =postService.create(post);
+       } catch (Exception e) {
+           System.out.println(e.getMessage());
+       }
 
 
     }
@@ -241,8 +295,8 @@ public class Application {
      */
     public static void main(String[] args) {
         ServiceFactory serviceFactory = new ServiceFactory();
-        UserService userService = null;
-        PostService postService = null;
+        UserService userService = serviceFactory.getUserService();
+        PostService postService = serviceFactory.getPostService();
         Application application = new Application(postService, userService);
         application.start();
     }

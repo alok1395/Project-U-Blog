@@ -32,12 +32,70 @@ package com.upgrad.ublog.dao;
  *  without setting any of its attributes.
  */
 
+import com.upgrad.ublog.db.Database;
+import com.upgrad.ublog.dtos.Post;
+import com.upgrad.ublog.services.UserServiceImpl;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+
 /**
  * TODO: 4.8. Implement findAllTags() method which returns a list of all tags in the POST table.
  * TODO: 4.9. Implement findByTag() method which takes "tag" as an input argument and returns all the
  *  posts corresponding to the input "tag" from the POST table defined in the database.
  */
 
-public class PostDAOImpl {
+public class PostDAOImpl implements PostDAO{
+    public PostDAOImpl() {
+    }
 
+    private static PostDAOImpl instance;
+
+    public static PostDAOImpl getInstance() {
+        if (instance == null) {
+            instance = new PostDAOImpl();
+        }
+        return instance;
+    }
+
+
+    @Override
+    public Post create(Post post) throws SQLException {
+        Connection connection = Database.getConnection();
+        Statement statement = connection.createStatement();
+        String sql = "INSERT INTO post (postId, emailId, tag, title, description, timestamp) VALUES (" +
+                post.getPostId() +", '" + post.getEmailId() + "', '" + post.getTag() + "', '" +
+                 post.getTitle() + "', '" + post.getDescription() + "', '" + post.getTimestamp() +
+                "' )";
+        statement.executeUpdate(sql);
+        System.out.println("Executing query");
+        return post;
+    }
+
+    @Override
+    public List<Post> findByEmailId(String emailId) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public List<Post> findByTag(String tag) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public Post findByPostId(int postId) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public List<String> findAllTags() throws SQLException {
+        return null;
+    }
+
+    @Override
+    public boolean deleteByPostId(int postId) throws SQLException {
+        return false;
+    }
 }

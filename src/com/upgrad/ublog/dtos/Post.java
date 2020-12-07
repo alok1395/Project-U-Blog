@@ -112,4 +112,6 @@ public class Post {
          * Post{postId=1, emailId='dummy@dummy.com', tag='tag', title='title', description='Description', timestamp=2020-05-22T21:01:34.483363800}
          */
     }
+
+
 }

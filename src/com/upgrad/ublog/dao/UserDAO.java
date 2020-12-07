@@ -6,5 +6,5 @@ import java.sql.SQLException;
 
 public interface UserDAO {
     public User create(User user) throws SQLException;
-    public User findByEmailId(String emailId) throws SQLException;
+    public  User findByEmailId(String emailId) throws SQLException;
 }
