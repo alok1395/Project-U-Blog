@@ -1,5 +1,6 @@
 package com.upgrad.ublog;
 
+import com.upgrad.ublog.db.Database;
 import com.upgrad.ublog.dtos.Post;
 import com.upgrad.ublog.dtos.User;
 import com.upgrad.ublog.exceptions.PostNotFoundException;
@@ -10,9 +11,14 @@ import com.upgrad.ublog.utils.DateTimeFormatter;
 import com.upgrad.ublog.utils.LogWriter;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Application {
     private Scanner scanner;
@@ -219,7 +225,7 @@ public class Application {
      *  a single catch block which handles all exceptions using the Exception class and print the
      *  exception message using the getMessage() method.
      */
-    private void searchPost() {
+    private void searchPost(){
         if (!isLoggedIn) {
             System.out.println("You are not logged in.");
             return;
@@ -230,6 +236,24 @@ public class Application {
         System.out.println("*********************");
 
 
+        List<Post> posts = null;
+        try {
+            posts = postService.getPostsByEmailId(loggedInEmailId);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            if (posts == null) {
+                throw new PostNotFoundException("Sorry no posts exists for this email id");
+            }
+        }
+        catch (PostNotFoundException e){
+            System.out.println(e.getMessage());
+        }
+
+        for (Post post: posts) {
+            System.out.println(post);
+        }
     }
 
     /**
@@ -253,6 +277,37 @@ public class Application {
         System.out.println("*****Delete Post*****");
         System.out.println("*********************");
 
+        int postId = 0;
+
+        try {
+            Connection connection = Database.getConnection();
+            Statement statement = connection.createStatement();
+            String sql = "SELECT postId  FROM post WHERE emailId = '" + loggedInEmailId + "'";
+            ResultSet resultset = statement.executeQuery(sql);
+
+            while(resultset.next()){
+                postId=resultset.getInt("postId");
+            }
+        }
+        catch(SQLException e){
+            System.out.println("Some unexpected error occurred");
+
+        }
+
+
+        boolean posts = false;
+        try {
+            posts = postService.deletePost(postId,loggedInEmailId);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        if(posts){
+            System.out.println("Post deleted successfully!");
+        }
+        else
+        {
+            System.out.println("You are not authorised to delete this post");
+        }
 
     }
 
@@ -276,6 +331,44 @@ public class Application {
         System.out.println("*********************");
         System.out.println("*****Filter Post*****");
         System.out.println("*********************");
+
+        Set<String> allTags = null;
+        try {
+            allTags = postService.getAllTags();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        for(String  tags : allTags){
+                System.out.println(tags);
+
+        }
+
+
+         System.out.println("Enter tag");
+        String tagByUser =scanner.next();
+
+
+
+        List<Post> allPostByTags=null;
+        try {
+            allPostByTags = postService.getPostsByTag(tagByUser);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+
+        try {
+            if (allPostByTags == null) {
+                throw new PostNotFoundException("Sorry no posts exists for this tag");
+            }
+        } catch (PostNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+
+       // assert allPostByTags != null;
+        for(Post post : allPostByTags){
+            System.out.println(post);
+        }
 
 
     }

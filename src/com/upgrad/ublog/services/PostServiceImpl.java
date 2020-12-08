@@ -55,8 +55,10 @@ import com.upgrad.ublog.dao.DAOFactory;
 import com.upgrad.ublog.dao.PostDAO;
 import com.upgrad.ublog.dao.UserDAO;
 import com.upgrad.ublog.dtos.Post;
+import com.upgrad.ublog.exceptions.PostNotFoundException;
 
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -99,21 +101,64 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public List<Post> getPostsByEmailId(String emailId) throws Exception {
-        return null;
+        List<Post> temp;
+        try {
+            temp = postDAO.findByEmailId(emailId);
+        } catch (SQLException e) {
+            throw new Exception("Some unexpected error occurred.");
+        }
+        return temp;
     }
 
     @Override
     public List<Post> getPostsByTag(String tag) throws Exception {
-        return null;
+        List<Post> temp;
+        try {
+            temp = postDAO.findByTag(tag);
+        } catch (SQLException e) {
+            throw new Exception("Some unexpected error occurred.");
+        }
+        return temp;
     }
 
     @Override
     public Set<String> getAllTags() throws Exception {
-        return null;
+        List<String> temp;
+        try {
+            temp = postDAO.findAllTags();
+        } catch (SQLException e) {
+            throw new Exception("Some unexpected error occurred.");
+        }
+
+        Set<String> allTags=new HashSet<>();
+
+        for(String data: temp){
+            allTags.add(data);
+        }
+        return allTags;
     }
 
     @Override
     public boolean deletePost(int postId, String emailId) throws Exception {
-        return false;
+        Post temp=null;
+        boolean value;
+        try {
+            temp = postDAO.findByPostId(postId);
+        } catch (SQLException e) {
+            throw new Exception("Some unexpected error occurred");
+        }
+
+        if(temp==null){
+            throw  new PostNotFoundException("No Post exist with the given Post Id");
+        }else{
+            if(emailId==temp.getEmailId()) {
+                 value=postDAO.deleteByPostId(postId);
+            }
+            else {
+            return  false;
+            }
+
+        }
+        return value;
     }
 }
