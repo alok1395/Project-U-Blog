@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-public class Application {
+public class Application  implements Runnable{
     private Scanner scanner;
 
     ServiceFactory serviceFactory=new ServiceFactory();
@@ -186,7 +186,9 @@ public class Application {
         System.out.println("*********************");
         System.out.println("*****Create Post*****");
         System.out.println("*********************");
-        
+
+
+
         int postId=1;
         String emailId=loggedInEmailId;
         String tag="";
@@ -410,6 +412,12 @@ public class Application {
         UserService userService = serviceFactory.getUserService();
         PostService postService = serviceFactory.getPostService();
         Application application = new Application(postService, userService);
+
         application.start();
+    }
+
+    @Override
+    public void run() {
+
     }
 }
