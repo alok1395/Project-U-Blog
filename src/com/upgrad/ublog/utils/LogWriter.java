@@ -1,5 +1,6 @@
 package com.upgrad.ublog.utils;
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -11,5 +12,14 @@ import java.io.IOException;
  */
 
 public class LogWriter {
+     public static void writeLog(String logMessage, String path) throws IOException{
+         try (BufferedWriter bw = new BufferedWriter(new FileWriter(path, true))) {
+             bw.write(logMessage);
+             bw.newLine();
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+     }
+
 
 }

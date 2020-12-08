@@ -15,6 +15,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
@@ -212,6 +215,22 @@ public class Application {
            System.out.println(e.getMessage());
        }
 
+
+       LogWriter logWriter=new LogWriter();
+        String timeStamp = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(LocalDateTime.now());
+
+        String titleOfPost=title;
+        String creatorEmailId=loggedInEmailId;
+
+        String path=System.getProperty("user.dir");
+
+        String message=timeStamp +" Title of post :  "+ titleOfPost + " Created by : " + creatorEmailId;
+        try {
+            logWriter.writeLog(message, path);
+        }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+        }
 
     }
 
